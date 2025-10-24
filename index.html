@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tri Vibe - Gifts Shopping</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #2874f0; color: white; padding: 10px; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product { background: white; border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 5px; }
+        .product img { max-width: 100%; height: 200px; object-fit: cover; }
+        .product h3 { margin: 10px 0; }
+        .product p { color: #666; }
+        .price { font-size: 1.2em; color: #2874f0; }
+        button { background-color: #ff9f43; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+        button:hover { background-color: #e67e22; }
+        .cart { position: fixed; right: 0; top: 0; width: 300px; height: 100%; background: white; border-left: 1px solid #ddd; padding: 20px; overflow-y: auto; display: none; }
+        .cart.show { display: block; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        #cart-toggle { position: fixed; top: 10px; right: 10px; background: #2874f0; color: white; padding: 10px; cursor: pointer; }
+        #checkout { margin-top: 20px; width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tri Vibe - Your Story Our</h1>
+        <button id="cart-toggle">Cart (0)</button>
+    </header>
+    <div class="container">
+        <div class="products" id="products"></div>
+    </div>
+    <div class="cart" id="cart">
+        <h2>Shopping Cart</h2>
+        <div id="cart-items"></div>
+        <p>Total: $<span id="total">0</span></p>
+        <button id="checkout">Proceed to Checkout</button>
+    </div>
+
+    <script>
+        // Sample products (replace with your own)
+        const products = [
+            {  id: 1,
+        name: "Customized Couple Eye Pendant",
+        price: 399,
+        image: "https://i.postimg.cc/NfTLXXvS/Whats-App-Image-2025-08-01-at-00-04-33-26fb97a3.jpg",
+        description: "A stunning custom-made pendant symbolizing love and connection — perfect for couples."},
+            { id: 2, name: "Single Clip Bouquet", price: 99, image: "https://i.postimg.cc/dt7rxDPx/Presilha-de-flor.jpg", description: "A cute floral clip bouquet perfect for gifting or personal styling" },
+            { id: 3, name: "Premium Customized Men’s Wallet", price: 249, image: "https://i.postimg.cc/RVV4SnVy/Untitled-Project-22.jpg", description: "A sleek, stylish leather wallet customized with your name or initials — the perfect blend of elegance and personal touch." }
+        ];
+
+        let cart = [];
+        const productsContainer = document.getElementById('products');
+        const cartItems = document.getElementById('cart-items');
+        const totalEl = document.getElementById('total');
+        const cartToggle = document.getElementById('cart-toggle');
+        const cartDiv = document.getElementById('cart');
+        const checkoutBtn = document.getElementById('checkout');
+
+        // Render products
+        function renderProducts() {
+            productsContainer.innerHTML = '';
+            products.forEach(product => {
+                const productEl = document.createElement('div');
+                productEl.className = 'product';
+                productEl.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <p class="price">$${product.price}</p>
+                    <button onclick="addToCart(${product.id})">Add to Cart</button>
+                    <button onclick="buyNow(${product.id})">Buy Now</button>
+                `;
+                productsContainer.appendChild(productEl);
+            });
+        }
+
+        // Add to cart
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            updateCart();
+        }
+
+        // Buy Now (simulates direct purchase)
+        function buyNow(id) {
+            const product = products.find(p => p.id === id);
+            alert(`Buying ${product.name} for $${product.price}. Redirecting to payment...`);
+            // In a real app, integrate payment gateway here (e.g., window.location.href = 'https://stripe.com/pay/...');
+        }
+
+        // Update cart display
+        function updateCart() {
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <span>${item.name} - $${item.price}</span>
+                    <button onclick="removeFromCart(${index})">Remove</button>
+                `;
+                cartItems.appendChild(itemEl);
+            });
+            totalEl.textContent = total.toFixed(2);
+            cartToggle.textContent = `Cart (${cart.length})`;
+        }
+
+        // Remove from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Toggle cart
+        cartToggle.addEventListener('click', () => {
+            cartDiv.classList.toggle('show');
+        });
+
+        // Checkout (simulate)
+        checkoutBtn.addEventListener('click', () => {
+            alert(`Checkout total: $${totalEl.textContent}. Payment processing...`);
+            cart = [];
+            updateCart();
+        });
+
+        // Initialize
+        renderProducts();
+    </script>
+</body>
+</html>
